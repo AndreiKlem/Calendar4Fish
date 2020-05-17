@@ -1,5 +1,6 @@
 package ru.aklem.myapplication;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,8 +27,10 @@ public class CalendarViewFragment extends Fragment {
     MonthCollectionAdapter monthCollectionAdapter;
     ViewPager2 viewPager;
     Calendar mCurrentMonth = Calendar.getInstance();
+    Calendar mMonth = Calendar.getInstance();
     CalendarViewModel calendarViewModel;
     TextView monthYearText;
+    int currentPosition = 2;
 
     public CalendarViewFragment() {
         // empty public constructor
@@ -43,58 +46,82 @@ public class CalendarViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mMonth.getTime();
+        mMonth.add(Calendar.MONTH, - currentPosition);
         monthCollectionAdapter = new MonthCollectionAdapter(this);
         viewPager = view.findViewById(R.id.month_view_pager);
-        monthYearText = view.findViewById(R.id.month_year_text_view);
 
-        // Passing month to display to GridViewFragment
+        monthYearText = view.findViewById(R.id.month_year_text_view);
         calendarViewModel = new ViewModelProvider(requireActivity()).get(CalendarViewModel.class);
-        calendarViewModel.setDate(mCurrentMonth.getTimeInMillis());
+        calendarViewModel.passCurrentMonth(mMonth);
+        calendarViewModel.InitArray();
 
         // Set current date in the text view
-        long monthText = calendarViewModel.getMontYearText();
-        monthYearText.setText(getMonthYear(monthText));
-
-
+        monthYearText.setText(getMonthYear(mCurrentMonth.getTimeInMillis()));
 
         viewPager.setPageTransformer(new ZoomOutPageTransformer());
         viewPager.setAdapter(monthCollectionAdapter);
-        viewPager.setCurrentItem(2, false);
+        viewPager.setCurrentItem(currentPosition, false);
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-                Log.i(TAG, "onPageScrolled, position = " + position);
+                if (position < currentPosition) {
+                    mCurrentMonth.add(Calendar.MONTH, -1);
+                    currentPosition = position;
+                    if (position < 2) {
+                        calendarViewModel.addBefore();
+                        monthCollectionAdapter.notifyItemInserted(0);
+                    }
+                } else if (position > currentPosition) {
+                    mCurrentMonth.add(Calendar.MONTH, 1);
+                    currentPosition = position;
+                }
+                monthYearText.setText(getMonthYear(mCurrentMonth.getTimeInMillis()));
             }
         });
+
     }
 
     private String getMonthYear(long date) {
         SimpleDateFormat formatter = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
         return formatter.format(date);
     }
-}
-
-class MonthCollectionAdapter extends FragmentStateAdapter {
 
 
-    public MonthCollectionAdapter(Fragment fragment) {
-        super(fragment);
-    }
+    class MonthCollectionAdapter extends FragmentStateAdapter {
 
-    @NonNull
-    @Override
-    public Fragment createFragment(int position) {
-        Fragment fragment = new GridViewFragment();
-        Bundle args = new Bundle();
-        args.putInt(GridViewFragment.POSITION, position);
-        fragment.setArguments(args);
-        return fragment;
-    }
+        MonthCollectionAdapter(Fragment fragment) {
+            super(fragment);
+        }
 
-    @Override
-    public int getItemCount() {
-        return 5;
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+
+            Fragment fragment = new GridViewFragment();
+            Bundle args = new Bundle();
+            long month = getItemId(position);
+            args.putLong(GridViewFragment.DATE, month);
+
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public int getItemCount() {
+            return calendarViewModel.size();
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return calendarViewModel.itemId(position);
+        }
+
+        @Override
+        public boolean containsItem(long itemId) {
+            return calendarViewModel.contains(itemId);
+        }
     }
 }
