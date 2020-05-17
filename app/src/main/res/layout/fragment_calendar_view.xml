@@ -17,8 +17,45 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
+            android:textColor="@android:color/black"
             android:text="May 2020"
             android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/WeekDay"
+                android:text="@string/monday" />
+
+            <TextView
+                style="@style/WeekDay"
+                android:text="@string/tuesday" />
+
+            <TextView
+                style="@style/WeekDay"
+                android:text="@string/wednesday" />
+
+            <TextView
+                style="@style/WeekDay"
+                android:text="@string/thursday" />
+
+            <TextView
+                style="@style/WeekDay"
+                android:text="@string/friday" />
+
+            <TextView
+                style="@style/WeekDay"
+                android:text="@string/saturday" />
+
+            <TextView
+                style="@style/WeekDay"
+                android:text="@string/sunday" />
+
+        </LinearLayout>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/month_view_pager"

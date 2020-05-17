@@ -6,27 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 public class GridViewFragment extends Fragment {
-    public static final String POSITION = "position";
+    public static final String DATE = "date";
+    private static final String TAG = "debug, GridViewFragment, ";
     private final int GRID_CELLS = 42;
-    CalendarViewModel calendarViewModel;
 
-
-    public GridViewFragment() {
-    }
+    public GridViewFragment() {}
 
     @Nullable
     @Override
@@ -37,39 +31,29 @@ public class GridViewFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        // Receive current date from parent fragment
-        calendarViewModel = new ViewModelProvider(requireActivity()).get(CalendarViewModel.class);
-        long currentMonth = calendarViewModel.getDate();
+        ArrayList<Date> daysArray = new ArrayList<>();
+        GridView monthGrid = view.findViewById(R.id.month_grid_view);
 
         // Receive position of current page
         Bundle args = getArguments();
-        int position = args.getInt(POSITION);
-
+        long date = args.getLong(DATE);
 
         // Assign array of days to pass to grid adapter
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(currentMonth);
-
-        // Offsetting month on swipe
-        cal.add(Calendar.MONTH, position);
+        cal.setTimeInMillis(date);
 
         // Revolving month to the first day
-        cal.set(Calendar.DAY_OF_MONTH, 1);
         long monthToPass = cal.getTimeInMillis();
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
 
-        int dayOffset = cal.get(Calendar.DAY_OF_WEEK) -2;
-        cal.add(Calendar.DAY_OF_MONTH, -dayOffset);
-        ArrayList<Date> daysArray = new ArrayList<>();
-        MonthGridAdapter adapter;
-        for (int i = 0; i < GRID_CELLS; i++) {
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        Log.i(TAG, "onViewCreated: cal: " + cal.getTime());
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        while (daysArray.size() < GRID_CELLS) {
             daysArray.add(cal.getTime());
             cal.add(Calendar.DAY_OF_MONTH, 1);
         }
-        GridView monthGrid = view.findViewById(R.id.month_grid_view);
-        Calendar temp = Calendar.getInstance();
-        temp.setTimeInMillis(currentMonth);
-        adapter = new MonthGridAdapter(requireContext(), R.layout.day_cell, R.id.day_cell_text_view, daysArray, monthToPass);
-        monthGrid.setAdapter(adapter);
+        monthGrid.setAdapter(new MonthGridAdapter(requireContext(), R.layout.day_cell, R.id.day_cell_text_view, daysArray, monthToPass));
     }
 }
