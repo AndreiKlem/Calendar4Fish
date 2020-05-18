@@ -5,7 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +34,7 @@ public class GridViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ArrayList<Date> daysArray = new ArrayList<>();
-        GridView monthGrid = view.findViewById(R.id.month_grid_view);
+        final GridView monthGrid = view.findViewById(R.id.month_grid_view);
 
         // Receive position of current page
         Bundle args = getArguments();
@@ -47,7 +49,7 @@ public class GridViewFragment extends Fragment {
         cal.setFirstDayOfWeek(Calendar.MONDAY);
 
         cal.set(Calendar.DAY_OF_MONTH, 1);
-        Log.i(TAG, "onViewCreated: cal: " + cal.getTime());
+        cal.getTime();
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
         while (daysArray.size() < GRID_CELLS) {

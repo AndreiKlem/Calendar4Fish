@@ -1,19 +1,16 @@
 package ru.aklem.myapplication;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -23,11 +20,10 @@ import java.util.Locale;
 
 public class CalendarViewFragment extends Fragment {
 
-    private static final String TAG = "";
+    private static final String TAG = "debug";
     MonthCollectionAdapter monthCollectionAdapter;
     ViewPager2 viewPager;
     Calendar mCurrentMonth = Calendar.getInstance();
-    Calendar mMonth = Calendar.getInstance();
     CalendarViewModel calendarViewModel;
     TextView monthYearText;
     int currentPosition = 2;
@@ -46,18 +42,22 @@ public class CalendarViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mMonth.getTime();
-        mMonth.add(Calendar.MONTH, - currentPosition);
-        monthCollectionAdapter = new MonthCollectionAdapter(this);
-        viewPager = view.findViewById(R.id.month_view_pager);
 
+        viewPager = view.findViewById(R.id.month_view_pager);
         monthYearText = view.findViewById(R.id.month_year_text_view);
+
+        monthCollectionAdapter = new MonthCollectionAdapter(this);
         calendarViewModel = new ViewModelProvider(requireActivity()).get(CalendarViewModel.class);
-        calendarViewModel.passCurrentMonth(mMonth);
-        calendarViewModel.InitArray();
+
+        mCurrentMonth.getTime();
 
         // Set current date in the text view
         monthYearText.setText(getMonthYear(mCurrentMonth.getTimeInMillis()));
+
+        mCurrentMonth.add(Calendar.MONTH, - currentPosition);
+        calendarViewModel.passPreviousMonth(mCurrentMonth);
+        calendarViewModel.InitArray();
+        mCurrentMonth.add(Calendar.MONTH, currentPosition);
 
         viewPager.setPageTransformer(new ZoomOutPageTransformer());
         viewPager.setAdapter(monthCollectionAdapter);
@@ -73,15 +73,19 @@ public class CalendarViewFragment extends Fragment {
                     if (position < 2) {
                         calendarViewModel.addBefore();
                         monthCollectionAdapter.notifyItemInserted(0);
+                        currentPosition ++;
                     }
                 } else if (position > currentPosition) {
                     mCurrentMonth.add(Calendar.MONTH, 1);
                     currentPosition = position;
+                    if (position > calendarViewModel.size() - 2) {
+                        calendarViewModel.addAfter();
+                        monthCollectionAdapter.notifyItemInserted(calendarViewModel.size());
+                    }
                 }
                 monthYearText.setText(getMonthYear(mCurrentMonth.getTimeInMillis()));
             }
         });
-
     }
 
     private String getMonthYear(long date) {
@@ -89,7 +93,9 @@ public class CalendarViewFragment extends Fragment {
         return formatter.format(date);
     }
 
-
+    /**
+     * Adapter for the calendar view
+     */
     class MonthCollectionAdapter extends FragmentStateAdapter {
 
         MonthCollectionAdapter(Fragment fragment) {

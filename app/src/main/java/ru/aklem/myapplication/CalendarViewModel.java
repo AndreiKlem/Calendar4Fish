@@ -5,9 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 
 public class CalendarViewModel extends ViewModel {
 
@@ -28,7 +26,7 @@ public class CalendarViewModel extends ViewModel {
         return mItems.size();
     }
 
-    public void passCurrentMonth(Calendar month) {
+    public void passPreviousMonth(Calendar month) {
         mCal = (Calendar) month.clone();
     }
 
@@ -43,6 +41,11 @@ public class CalendarViewModel extends ViewModel {
         mCal.setTimeInMillis(mItems.get(0));
         mCal.add(Calendar.MONTH, -1);
         mItems.add(0, mCal.getTimeInMillis());
-        Log.i(TAG, "addBefore: mItems: " + mItems);
+    }
+
+    public void addAfter() {
+        mCal.setTimeInMillis(mItems.get(mItems.size() - 1));
+        mCal.add(Calendar.MONTH, 1);
+        mItems.add(mItems.size(), mCal.getTimeInMillis());
     }
 }
