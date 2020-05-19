@@ -5,9 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,8 +17,6 @@ import java.util.Date;
 
 public class GridViewFragment extends Fragment {
     public static final String DATE = "date";
-    private static final String TAG = "debug, GridViewFragment, ";
-    private final int GRID_CELLS = 42;
 
     public GridViewFragment() {}
 
@@ -44,15 +40,18 @@ public class GridViewFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date);
 
-        // Revolving month to the first day
+        // Initialize calendar
         long monthToPass = cal.getTimeInMillis();
         cal.setFirstDayOfWeek(Calendar.MONDAY);
 
+        // Roll calendar to the first monday of grid
+        cal.set(Calendar.WEEK_OF_MONTH, 1);
         cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.getTime();
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-        while (daysArray.size() < GRID_CELLS) {
+        // Fill an array with days
+        int gridCalls = 42;
+        while (daysArray.size() < gridCalls) {
             daysArray.add(cal.getTime());
             cal.add(Calendar.DAY_OF_MONTH, 1);
         }
