@@ -84,4 +84,12 @@ public class GridViewFragment extends Fragment {
         super.onResume();
         adapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (previousView != null) {
+            previousView.setBackground(null);
+        }
+    }
 }
