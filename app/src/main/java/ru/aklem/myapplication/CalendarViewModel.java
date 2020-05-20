@@ -1,7 +1,5 @@
 package ru.aklem.myapplication;
 
-import android.util.Log;
-
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
@@ -9,9 +7,8 @@ import java.util.Calendar;
 
 public class CalendarViewModel extends ViewModel {
 
-    private static final String TAG = "debug";
-    Calendar mCal = Calendar.getInstance();
-    ArrayList<Long> mItems = new ArrayList<>();
+    private Calendar mCal = Calendar.getInstance();
+    private ArrayList<Long> mItems = new ArrayList<>();
 
 
     public long itemId(int position) {

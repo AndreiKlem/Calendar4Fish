@@ -2,6 +2,7 @@ package ru.aklem.myapplication;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,10 +45,12 @@ public class MonthGridAdapter extends ArrayAdapter<Date> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
         Date date = getItem(position);
         Calendar currentDay = Calendar.getInstance();
         currentDay.setTime(date);
 
+        convertView.setBackground(null);
         int day = currentDay.get(Calendar.DAY_OF_MONTH);
         int month = currentDay.get(Calendar.MONTH);
         int year = currentDay.get(Calendar.YEAR);

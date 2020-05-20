@@ -1,32 +1,38 @@
 package ru.aklem.myapplication;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class CalendarViewFragment extends Fragment {
 
     private static final String TAG = "debug";
-    MonthCollectionAdapter monthCollectionAdapter;
-    ViewPager2 viewPager;
-    Calendar mCurrentMonth = Calendar.getInstance();
-    CalendarViewModel calendarViewModel;
-    TextView monthYearText;
-    int currentPosition = 2;
+    private MonthCollectionAdapter monthCollectionAdapter;
+    private ViewPager2 viewPager;
+    private Calendar mCurrentMonth = Calendar.getInstance();
+    private CalendarViewModel calendarViewModel;
+    private TextView monthYearText;
+    private int currentPosition = 2;
+
 
     public CalendarViewFragment() {
         // empty public constructor
@@ -43,6 +49,8 @@ public class CalendarViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        
         viewPager = view.findViewById(R.id.month_view_pager);
         monthYearText = view.findViewById(R.id.month_year_text_view);
 
@@ -105,12 +113,10 @@ public class CalendarViewFragment extends Fragment {
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-
             Fragment fragment = new GridViewFragment();
             Bundle args = new Bundle();
             long month = getItemId(position);
             args.putLong(GridViewFragment.DATE, month);
-
             fragment.setArguments(args);
             return fragment;
         }

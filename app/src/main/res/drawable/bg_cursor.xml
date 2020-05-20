@@ -3,10 +3,6 @@
     <item>
         <shape android:shape="oval">
             <solid android:color="@color/colorAccent"/>
-            <padding android:bottom="-5dp"/>
-            <padding android:right="-5dp"/>
-            <padding android:left="-5dp"/>
-            <padding android:top="-5dp"/>
         </shape>
     </item>
 </selector>
