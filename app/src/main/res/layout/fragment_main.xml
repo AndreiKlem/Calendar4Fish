@@ -11,9 +11,14 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@+id/calendar_view"
+            android:id="@+id/calendar_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/event_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

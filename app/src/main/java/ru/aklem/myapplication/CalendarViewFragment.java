@@ -2,6 +2,7 @@ package ru.aklem.myapplication;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,16 +28,13 @@ public class CalendarViewFragment extends Fragment {
 
     private static final String TAG = "debug";
     private MonthCollectionAdapter monthCollectionAdapter;
-    private ViewPager2 viewPager;
     private Calendar mCurrentMonth = Calendar.getInstance();
     private CalendarViewModel calendarViewModel;
     private TextView monthYearText;
     private int currentPosition = 2;
 
 
-    public CalendarViewFragment() {
-        // empty public constructor
-    }
+    public CalendarViewFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,12 +47,11 @@ public class CalendarViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        
-        viewPager = view.findViewById(R.id.month_view_pager);
+        ViewPager2 viewPager = view.findViewById(R.id.month_view_pager);
         monthYearText = view.findViewById(R.id.month_year_text_view);
 
         monthCollectionAdapter = new MonthCollectionAdapter(this);
+        Log.i(TAG, "onViewCreated: monthCollectionAdapter " + monthCollectionAdapter);
         calendarViewModel = new ViewModelProvider(requireActivity()).get(CalendarViewModel.class);
 
         mCurrentMonth.getTime();

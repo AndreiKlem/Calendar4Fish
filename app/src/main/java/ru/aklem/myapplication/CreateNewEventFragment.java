@@ -1,9 +1,13 @@
 package ru.aklem.myapplication;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,42 +22,8 @@ public class CreateNewEventFragment extends Fragment implements View.OnClickList
 
     NavController navController;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public CreateNewEventFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateNewEventFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CreateNewEventFragment newInstance(String param1, String param2) {
-        CreateNewEventFragment fragment = new CreateNewEventFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -67,7 +37,11 @@ public class CreateNewEventFragment extends Fragment implements View.OnClickList
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+
         FloatingActionButton confirmFab = view.findViewById(R.id.confirm_fab);
+        EditText title = view.findViewById(R.id.title_edit_text);
+
+        showKeyboard(getContext(), title);
         confirmFab.setOnClickListener(this);
     }
 
@@ -78,4 +52,11 @@ public class CreateNewEventFragment extends Fragment implements View.OnClickList
                 navController.navigate(R.id.action_createNewEventFragment_to_mainFragment);
         }
     }
+
+    private void showKeyboard(Context context, View view) {
+        view.requestFocus();
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+    }
+
 }
